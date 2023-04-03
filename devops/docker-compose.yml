@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  python-telegram-bot:
+    image: python-telegram-bot:latest
+    volumes:
+      - ./logs:/logs
+    build: 
+      context: .
+      dockerfile: ptb.Dockerfile
+  python-telegram-bot-tests:
+    image: python-telegram-bot-tests:latest
+    volumes:
+      - ./logs:/logs
+    build:
+      context: .
+      dockerfile: ptbtest.Dockerfile
+    depends_on:
+      - python-telegram-bot
+volumes:
+  logs:
