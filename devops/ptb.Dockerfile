@@ -2,7 +2,7 @@ FROM python:latest
 # update
 RUN apt-get -y update
 # clone repo
-# RUN git clone https://github.com/ho-ody/python-telegram-bot.git
+RUN git clone https://github.com/ho-ody/python-telegram-bot.git
 WORKDIR "python-telegram-bot/"
 # install
 RUN python setup.py install

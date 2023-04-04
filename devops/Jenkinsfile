@@ -1,0 +1,12 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot'
+            }
+        }
+    }
+}
