@@ -7,15 +7,15 @@ pipeline {
                 echo 'building...'
                 sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot'
             }
-        }
-        post {
-            always{
-            }
-            success {
-                echo '   success'
-            }
-            failure {
-                echo '   failure'
+            post {
+                always{
+                }
+                success {
+                    echo '   success'
+                }
+                failure {
+                    echo '   failure'
+                }
             }
         }
     }
