@@ -24,6 +24,11 @@ pipeline {
                 }
                 failure {
                     echo '   failure'
+                    emailext body: "Pipeline failed in stage 'Build'. Check the artifacts for details.",
+                                     subject: "Pipeline failed: ${VERSION}",
+                                     to: "r4f4l135@gmail.com",
+                                     attachLog: true,
+                                     attachmentsPattern: 'devops/*.txt'
                 }
             }
         }
@@ -41,6 +46,11 @@ pipeline {
                 }
                 failure {
                     echo '   failure'
+                    emailext body: "Pipeline failed in stage 'Test'. Check the artifacts for details.",
+                                     subject: "Pipeline failed: ${VERSION}",
+                                     to: "r4f4l135@gmail.com",
+                                     attachLog: true,
+                                     attachmentsPattern: 'devops/*.txt'
                 }
             }
         }
@@ -61,6 +71,11 @@ pipeline {
                     echo '   success'
                 }
                 failure {
+                    emailext body: "Pipeline failed in stage 'Deploy'. Check the artifacts for details.",
+                                     subject: "Pipeline failed: ${VERSION}",
+                                     to: "r4f4l135@gmail.com",
+                                     attachLog: true,
+                                     attachmentsPattern: 'devops/*.txt'
                     echo '   failure'
                 }
             }
