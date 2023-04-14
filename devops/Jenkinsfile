@@ -14,7 +14,7 @@ pipeline {
             }
             post {
                 always{
-                    echo '   done'
+                    archiveArtifacts artifacts: '/var/log/logs.txt', fingerprint: true
                 }
                 success {
                     echo '   success'
@@ -31,7 +31,7 @@ pipeline {
             }
             post {
                 always{
-                    echo '   done'
+                    archiveArtifacts artifacts: '/var/log/logs.txt', fingerprint: true
                 }
                 success {
                     echo '   success'
@@ -52,7 +52,7 @@ pipeline {
             }
             post {
                 always{
-                    echo '   done'
+                    archiveArtifacts artifacts: '/var/log/logs.txt', fingerprint: true
                 }
                 success {
                     echo '   success'
