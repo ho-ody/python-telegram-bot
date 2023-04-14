@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   python-telegram-bot:
-    image: python-telegram-bot:latest
+    image: python-telegram-bot:${BUILD_NUMBER}
     volumes:
       - ./logs:/logs
     build: 

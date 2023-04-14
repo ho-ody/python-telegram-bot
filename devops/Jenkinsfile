@@ -5,7 +5,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'building...'
-                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot'
+                //sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot'
+                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot:${BUILD_NUMBER}'
             }
             post {
                 always{
@@ -20,21 +21,39 @@ pipeline {
             }
         }
         stage('Test') {
-                    steps {
-                        echo 'testing...'
-                        sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot-tests'
+                steps {
+                    echo 'testing...'
+                    sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot-tests'
+                }
+                post {
+                    always{
+                        echo '   done'
                     }
-                    post {
-                        always{
-                            echo '   done'
-                        }
-                        success {
-                            echo '   success'
-                        }
-                        failure {
-                            echo '   failure'
-                        }
+                    success {
+                        echo '   success'
+                    }
+                    failure {
+                        echo '   failure'
                     }
                 }
+            }
+        stage('Deploy') {
+                steps {
+                    echo 'deploying...'
+                    sh "docker pull python-telegram-bot:${BUILD_NUMBER}"
+                    sh "DOCKER_TLS_VERIFY=0 docker-compose -f devops/docker-compose.yml up -d"
+                }
+                post {
+                    always{
+                        echo '   done'
+                    }
+                    success {
+                        echo '   success'
+                    }
+                    failure {
+                        echo '   failure'
+                    }
+                }
+            }
     }
 }
