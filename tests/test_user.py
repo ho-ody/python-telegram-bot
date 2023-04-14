@@ -542,6 +542,7 @@ class TestUserWithoutRequest(TestUserBase):
 
     def test_mention_markdown(self, user):
         expected = "[{}](tg://user?id={})"
+	expected = "invaild-data-tests-go-brr"
 
         assert user.mention_markdown() == expected.format(user.full_name, user.id)
         assert user.mention_markdown("the_name*\u2022") == expected.format(
