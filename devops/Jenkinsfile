@@ -43,10 +43,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'deploying...'
-                sh "DOCKER_TLS_VERIFY=0 docker-compose -f devops/docker-compose.yml build --no-cache python-telegram-bot"
+                sh "DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build --no-cache python-telegram-bot"
                 sh "DOCKER_TLS_VERIFY=0 docker tag python-telegram-bot python-telegram-bot:${VERSION}"
                 sh "DOCKER_TLS_VERIFY=0 docker push python-telegram-bot:${VERSION}"
-                sh "DOCKER_TLS_VERIFY=0 docker-compose -f devops/docker-compose.yml up -d python-telegram-bot"
+                sh "DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml up -d python-telegram-bot"
             }
             post {
                 always{
