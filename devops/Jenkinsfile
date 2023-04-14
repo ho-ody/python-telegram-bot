@@ -10,11 +10,11 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'building...'
-                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot > devops/logs/build.txt'
+                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot > devops/logs-build.txt'
             }
             post {
                 always{
-                    archiveArtifacts(artifacts: 'devops/logs/*.txt', fingerprint: true, followSymlinks: false)
+                    archiveArtifacts(artifacts: 'devops/*.txt', fingerprint: true, followSymlinks: false)
                 }
                 success {
                     echo '   success'
@@ -27,11 +27,11 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'testing...'
-                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot-tests > devops/logs/test.txt'
+                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot-tests > devops/logs-test.txt'
             }
             post {
                 always{
-                    archiveArtifacts(artifacts: 'devops/logs/*.txt', fingerprint: true, followSymlinks: false)
+                    archiveArtifacts(artifacts: 'devops/*.txt', fingerprint: true, followSymlinks: false)
                 }
                 success {
                     echo '   success'
@@ -44,7 +44,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'deploying...'
-                sh "DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build --no-cache python-telegram-bot > devops/logs/deploy.txt"
+                sh "DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build --no-cache python-telegram-bot > devops/logs-deploy.txt"
                 sh "DOCKER_TLS_VERIFY=0 docker tag python-telegram-bot hoody7/python-telegram-bot:${VERSION}"
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                 sh "DOCKER_TLS_VERIFY=0 docker push hoody7/python-telegram-bot:${VERSION}"
@@ -52,7 +52,7 @@ pipeline {
             }
             post {
                 always{
-                    archiveArtifacts(artifacts: 'devops/logs/*.txt', fingerprint: true, followSymlinks: false)
+                    archiveArtifacts(artifacts: 'devops/*.txt', fingerprint: true, followSymlinks: false)
                 }
                 success {
                     echo '   success'
