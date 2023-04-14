@@ -16,5 +16,12 @@ services:
       dockerfile: ptbtest.Dockerfile
     depends_on:
       - python-telegram-bot
+  python-telegram-bot-deploy:
+    image: python-telegram-bot-deploy:latest
+    build:
+      context: .
+      dockerfile: deploy.Dockerfile
+    depends_on:
+      - python-telegram-bot
 volumes:
   logs:
