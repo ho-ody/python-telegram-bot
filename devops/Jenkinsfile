@@ -1,12 +1,15 @@
 pipeline {
     agent any
 
+    environment {
+        VERSION = sh(returnStdout: true, script: 'echo ${BUILD_NUMBER}').trim()
+    }
+
     stages {
         stage('Build') {
             steps {
                 echo 'building...'
-                //sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot'
-                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot:${BUILD_NUMBER}'
+                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot'
             }
             post {
                 always{
@@ -21,44 +24,41 @@ pipeline {
             }
         }
         stage('Test') {
-                steps {
-                    echo 'testing...'
-                    sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot-tests'
+            steps {
+                echo 'testing...'
+                sh 'DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build python-telegram-bot-tests'
+            }
+            post {
+                always{
+                    echo '   done'
                 }
-                post {
-                    always{
-                        echo '   done'
-                    }
-                    success {
-                        echo '   success'
-                    }
-                    failure {
-                        echo '   failure'
-                    }
+                success {
+                    echo '   success'
+                }
+                failure {
+                    echo '   failure'
                 }
             }
+        }
         stage('Deploy') {
-                environment {
-                    IMAGE_TAG = "python-telegram-bot:${BUILD_NUMBER}"
+            steps {
+                echo 'deploying...'
+                sh "DOCKER_TLS_VERIFY=0 docker-compose -f devops/docker-compose.yml build --no-cache python-telegram-bot"
+                sh "DOCKER_TLS_VERIFY=0 docker tag python-telegram-bot python-telegram-bot:${VERSION}"
+                sh "DOCKER_TLS_VERIFY=0 docker push python-telegram-bot:${VERSION}"
+                sh "DOCKER_TLS_VERIFY=0 docker-compose -f devops/docker-compose.yml up -d python-telegram-bot"
+            }
+            post {
+                always{
+                    echo '   done'
                 }
-                steps {
-                    echo 'deploying...'
-                    sh "DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build --build-arg IMAGE_TAG=${IMAGE_TAG} python-telegram-bot"
-                    sh "DOCKER_TLS_VERIFY=0 docker tag python-telegram-bot:latest ${IMAGE_TAG}"
-                    sh "DOCKER_TLS_VERIFY=0 docker push ${IMAGE_TAG}"
-                    sh "DOCKER_TLS_VERIFY=0 docker-compose -f devops/docker-compose.yml up -d"
+                success {
+                    echo '   success'
                 }
-                post {
-                    always{
-                        echo '   done'
-                    }
-                    success {
-                        echo '   success'
-                    }
-                    failure {
-                        echo '   failure'
-                    }
+                failure {
+                    echo '   failure'
                 }
             }
+        }
     }
 }

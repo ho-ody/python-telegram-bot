@@ -1,21 +1,19 @@
 version: "3.9"
 services:
   python-telegram-bot:
-    build:
-      context: .
-      dockerfile: ptb.Dockerfile
-      args:
-        IMAGE_TAG: latest
     image: python-telegram-bot:latest
     volumes:
       - ./logs:/logs
-  python-telegram-bot-tests:
-    build:
+    build: 
       context: .
-      dockerfile: ptbtest.Dockerfile
+      dockerfile: ptb.Dockerfile
+  python-telegram-bot-tests:
     image: python-telegram-bot-tests:latest
     volumes:
       - ./logs:/logs
+    build:
+      context: .
+      dockerfile: ptbtest.Dockerfile
     depends_on:
       - python-telegram-bot
 volumes:
