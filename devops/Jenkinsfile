@@ -38,9 +38,14 @@ pipeline {
                 }
             }
         stage('Deploy') {
+                environment {
+                    IMAGE_TAG = "python-telegram-bot:${BUILD_NUMBER}"
+                }
                 steps {
                     echo 'deploying...'
-                    sh "docker pull python-telegram-bot:${BUILD_NUMBER}"
+                    sh "DOCKER_TLS_VERIFY=0 docker compose -f devops/docker-compose.yml build --build-arg IMAGE_TAG=${IMAGE_TAG} python-telegram-bot"
+                    sh "DOCKER_TLS_VERIFY=0 docker tag python-telegram-bot:latest ${IMAGE_TAG}"
+                    sh "DOCKER_TLS_VERIFY=0 docker push ${IMAGE_TAG}"
                     sh "DOCKER_TLS_VERIFY=0 docker-compose -f devops/docker-compose.yml up -d"
                 }
                 post {
