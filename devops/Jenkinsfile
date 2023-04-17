@@ -24,9 +24,10 @@ pipeline {
                 }
                 failure {
                     echo '   failure'
+		    emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
                     emailext body: "Pipeline failed in stage 'Build'. Check the artifacts for details.",
                                      subject: "Pipeline failed: ${VERSION}",
-                                     to: "r4f4l135@gmail.com",
+                                     to: "dubrix@vp.pl",
                                      attachLog: true,
                                      attachmentsPattern: 'devops/*.txt'
                 }
